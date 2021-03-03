@@ -15,12 +15,12 @@ class Main:
     def generate(self, month, year, reports_location):
         print('Generation start.')
         employee_name = self._username.split('@')[0]
-        issues, max_summary_len, max_comment_len = self._jira_data.get_jira_issues(month, year, employee_name)
+        projects = self._jira_data.get_jira_issues(month, year, employee_name)
         report_name = self._report_name_template.format(month, year)
 
         Path(reports_location).mkdir(parents=True, exist_ok=True)
         report_location = '{}/{}'.format(reports_location, report_name)
-        self._report.generate_report(issues, max_summary_len, max_comment_len, report_location)
+        self._report.generate_report(projects, report_location)
         print('Generation end in location {}.'.format(report_location))
 
 

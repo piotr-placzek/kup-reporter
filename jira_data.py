@@ -7,18 +7,31 @@ class JiraData:
         self._jira_username = username
         self._jira_rest = JiraRest(server, username, password)
 
+    @staticmethod
+    def __get_max_lengths(project):
+        max_summary_len = 10
+        max_comment_len = 10
+
+        for issue in project['issues']:
+            if len(project['issues'][issue]['summary']) > max_summary_len:
+                max_summary_len = len(project['issues'][issue]['summary'])
+            if 'comment' in project['issues'][issue]:
+                if len(project['issues'][issue]['summary']) > max_comment_len:
+                    max_comment_len = len(project['issues'][issue]['summary'])
+        return max_summary_len, max_comment_len
+
     def get_jira_issues(self, month, year, employee_name):
         search_response = self._jira_rest.search_for_issues_with_individual_worklogs(month, year, employee_name)
 
-        issues = {}
-        max_summary_len = 10
-        max_comment_len = 10
+        projects = {}
         for issue in search_response['issues']:
-            issues[issue['key']] = {}
-            issues[issue['key']]['summary'] = issue['fields']['summary']
+            project_name = issue['fields']['project']['name']
+            if project_name not in projects.keys():
+                projects[project_name] = {}
+                projects[project_name]['issues'] = {}
 
-            if len(issue['fields']['summary']) > max_summary_len:
-                max_summary_len = len(issue['fields']['summary'])
+            projects[project_name]['issues'][issue['key']] = {}
+            projects[project_name]['issues'][issue['key']]['summary'] = issue['fields']['summary']
 
             worklogs = self._jira_rest.get_issue_worklogs(issue['key'])
             print('Collecting issue {} data'.format(issue['key']))
@@ -29,13 +42,16 @@ class JiraData:
                     if worklog_date.month == month:
                         worklog_dates.append(worklog_date.day)
                         if 'comment' in worklog:
-                            issues[issue['key']]['comment'] = worklog['comment']
-                            if len(worklog['comment']) > max_comment_len:
-                                max_comment_len = len(worklog['comment'])
+                            projects[project_name]['issues'][issue['key']]['comment'] = worklog['comment']
 
-            issues[issue['key']]['min_date'] = \
+            projects[project_name]['issues'][issue['key']]['min_date'] = \
                 Date.format_date_with_leading_zeros(min(worklog_dates), month, year)
-            issues[issue['key']]['max_date'] = \
+            projects[project_name]['issues'][issue['key']]['max_date'] = \
                 Date.format_date_with_leading_zeros(max(worklog_dates), month, year)
 
-        return issues, max_summary_len, max_comment_len
+        for project in projects:
+            max_summary_len, max_comment_len = self.__get_max_lengths(projects[project])
+            projects[project]['max_summary_len'] = max_summary_len
+            projects[project]['max_comment_len'] = max_comment_len
+
+        return projects

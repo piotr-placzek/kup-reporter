@@ -12,7 +12,7 @@ class JiraRest(object):
     def search_for_issues_with_individual_worklogs(self, month, year, employee):
         from_date, to_date = Date.get_month_range(month, year)
         params = {
-            'fields': 'key,summary',
+            'fields': 'key,summary,project',
             'jql': 'worklogAuthor={0} AND worklogDate>={1} AND worklogDate<={2}'.format(employee, from_date, to_date)
         }
         url = "{}{}".format(self._server, '/rest/api/2/search')
