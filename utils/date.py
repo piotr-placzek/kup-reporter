@@ -17,5 +17,5 @@ class Date(object):
     @staticmethod
     def format_date_with_leading_zeros(day, month, year):
         day = '0{}'.format(day) if day < 10 else day
-        month = '0{}'.format(month) if month < 10 else month
+        month = '0{}'.format(month) if int(month) < 10 else month
         return '{}.{}.{}'.format(day, month, year)

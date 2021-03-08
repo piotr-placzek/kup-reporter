@@ -39,7 +39,7 @@ class JiraData:
             for worklog in worklogs['worklogs']:
                 if worklog['author']['emailAddress'] == self._jira_username:
                     worklog_date = Date.parse_date(worklog['started'])
-                    if worklog_date.month == month:
+                    if worklog_date.month == int(month):
                         worklog_dates.append(worklog_date.day)
                         if 'comment' in worklog:
                             projects[project_name]['issues'][issue['key']]['comment'] = worklog['comment']
