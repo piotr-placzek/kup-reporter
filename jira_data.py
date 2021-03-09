@@ -37,6 +37,9 @@ class JiraData:
             print('Collecting issue {} data'.format(issue['key']))
             worklog_dates = []
             for worklog in worklogs['worklogs']:
+                if 'emailAddress' not in worklog['author']:
+                    continue
+
                 if worklog['author']['emailAddress'] == self._jira_username:
                     worklog_date = Date.parse_date(worklog['started'])
                     if worklog_date.month == int(month):
