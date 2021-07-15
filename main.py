@@ -14,7 +14,7 @@ class Main:
 
     def generate(self, month, year, reports_location):
         print('Generation start.')
-        employee_name = self._username.split('@')[0]
+        employee_name = self._username
         projects = self._jira_data.get_jira_issues(month, year, employee_name)
         report_name = self._report_name_template.format(month, year)
 

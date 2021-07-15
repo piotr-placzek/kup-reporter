@@ -13,7 +13,7 @@ class JiraRest(object):
         from_date, to_date = Date.get_month_range(int(month), int(year))
         params = {
             'fields': 'key,summary,project',
-            'jql': 'worklogAuthor={0} AND worklogDate>={1} AND worklogDate<={2}'.format(employee, from_date, to_date)
+            'jql': 'worklogAuthor=\'{0}\' AND worklogDate>={1} AND worklogDate<={2}'.format(employee, from_date, to_date)
         }
         url = "{}{}".format(self._server, '/rest/api/2/search')
         response = get(url, params=params, auth=(self._user, self._password))
