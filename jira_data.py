@@ -33,6 +33,11 @@ class JiraData:
             projects[project_name]['issues'][issue['key']] = {}
             projects[project_name]['issues'][issue['key']]['summary'] = issue['fields']['summary']
 
+             if len(issue['fields']['description']) > 5:
+                projects[project_name]['issues'][issue['key']]['description'] = issue['fields']['description']
+            else:
+                projects[project_name]['issues'][issue['key']]['description'] = "DONE: " + issue['fields']['summary']
+
             worklogs = self._jira_rest.get_issue_worklogs(issue['key'])
             print('Collecting issue {} data'.format(issue['key']))
             worklog_dates = []

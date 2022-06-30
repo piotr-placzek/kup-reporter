@@ -32,8 +32,7 @@ class Report:
                 row_index += 1
                 ws.cell(column=1, row=row_index, value=issue)
                 ws.cell(column=2, row=row_index, value=projects[project]['issues'][issue]['summary'])
-                if 'comment' in projects[project]['issues'][issue]:
-                    ws.cell(column=3, row=row_index, value=projects[project]['issues'][issue]['comment'])
+                ws.cell(column=3, row=row_index, value=projects[project]['issues'][issue]['description'])
                 ws.cell(column=4, row=row_index, value=projects[project]['issues'][issue]['min_date'])
                 ws.cell(column=5, row=row_index, value=projects[project]['issues'][issue]['max_date'])
         wb.save(filename=report_location)
